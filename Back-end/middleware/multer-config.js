@@ -18,4 +18,6 @@ const storage = multer.diskStorage({
   }
 });
 
+/*extension probleme double */
+
 module.exports = multer({ storage }).single('image');

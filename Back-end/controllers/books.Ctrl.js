@@ -16,8 +16,6 @@ exports.allBooks = (req, res ,next) => {
 exports.addBook = async (req, res ,next) => {  
 
 const bookObject = JSON.parse(req.body.book);
-delete bookObject._id;
-delete bookObject._userId;
 
 const resizedImagePath = `images/resized_${req.file.filename}`;
 
@@ -168,7 +166,7 @@ exports.addRatingBook = (req, res ,next) => {
             // on ajoute au tableau ratings dans le schema du livre conserné
             book.ratings.push({ userId, grade: rating });
 
-            // Calcul du nouvel Rating
+            // Calcul du nouvel Rating + arrondir la somme au etoile ou autre ex : 3 ou 4 au lieu de 3.999
             const totalRatings = book.ratings.length;
             const sumRatings = book.ratings.reduce((sum, rating) => sum + rating.grade, 0);
             book.averageRating = sumRatings / totalRatings;

@@ -9,9 +9,12 @@ const webToken = require('jsonwebtoken');
 /**********  module verification email valide **********/
 const emailValidator = require('email-validator');
 
+/**** création d'une couche de securité ****/
+require('dotenv').config();
+
 /***************************************** authentification utilisateur *************************************/
 
-/************* identification et verification utilisateur , renvoi id utilisateur et un token web json  contenant id utilisateur **************/
+/************* ajout utilisateur a la base de donnés et hachage du mot de pass(crypto)  **************/
 exports.signup = (req, res ,next) => {     
     const email = req.body.email;
     // Vérification de l'email valide
@@ -31,7 +34,9 @@ exports.signup = (req, res ,next) => {
         .catch(error => res.status(500).json({ error }));
 };
 
-/************* ajout utilisateur a la base de donnés et hachage du mot de pass(crypto)  **************/
+/** helmet vol de session et cookie faire test pour étre certain pour les images / **/
+
+/************* identification et verification utilisateur , renvoi id utilisateur et un token web json  contenant id utilisateur **************/
 exports.login = (req, res ,next) => {
     // recherche de l'utilisateur par sont email grace a findOne
     userShema.findOne({email: req.body.email})
@@ -53,7 +58,7 @@ exports.login = (req, res ,next) => {
                             // création du token avec jsonwebtoken expiration au bout de 24h
                             token: webToken.sign(
                                 { userId: user._id },
-                                'TOKEN_SECRET_OPENCLASSROOM',
+                                process.env.SECRET,
                                 { expiresIn: '24h' }
                             )
                         });
