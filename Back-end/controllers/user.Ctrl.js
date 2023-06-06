@@ -17,10 +17,19 @@ require('dotenv').config();
 /************* ajout utilisateur a la base de donnés et hachage du mot de pass(crypto)  **************/
 exports.signup = (req, res ,next) => {     
     const email = req.body.email;
+    const password = req.body.password;
+    
     // Vérification de l'email valide
     if (!emailValidator.validate(email)) {
         return res.status(400).json({ message: "Email invalide" });
     }
+
+    // Vérification de la complexité du mot de passe , ici 8 caractéres dont 1 chriffre et 1 caractére speciales
+    const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
+    if (!passwordRegex.test(password)) {
+        return res.status(400).json({ message: "Le mot de passe doit avoir au moins 8 caractères, inclure au moins 1 chiffre et 1 caractère spécial" });
+    }
+
     bcrypt.hash(req.body.password, 10)
         .then(hash => {
             const user = new userShema({

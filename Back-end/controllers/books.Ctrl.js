@@ -163,6 +163,11 @@ exports.addRatingBook = (req, res ,next) => {
         if (!book) {
             return res.status(404).json({ message: "Livre non trouvé" });
         }
+            // vérifie si l'utilisateur a déjà voté pour ce livre
+            const hasVoted = book.ratings.some(rating => rating.userId === userId);
+            if (hasVoted) {
+              return res.status(400).json({ message: "Vous avez déjà voté pour ce livre" });
+            }
             // on ajoute au tableau ratings dans le schema du livre conserné
             book.ratings.push({ userId, grade: rating });
 
